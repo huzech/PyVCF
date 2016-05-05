@@ -369,9 +369,12 @@ class Reader(object):
 
         entries = info_str.split(';')
         retdict = {}
-
+        ALLELE_END = 0
         for entry in entries:
             entry = entry.split('=', 1)
+            if entry[0] == "ALLELE_END":
+                ALLELE_END += 1
+                continue
             ID = entry[0]
             try:
                 entry_type = self.infos[ID].type
@@ -410,8 +413,13 @@ class Reader(object):
                     val = val[0]
             except KeyError:
                 pass
+            if ALLELE_END == 1:
+            	retdict[ID] = [retdict[ID], val]
+            elif ALLELE_END > 1:
+            	retdict[ID].append(val)
+            else:
+                retdict[ID] = val
 
-            retdict[ID] = val
 
         return retdict
 
