@@ -368,7 +368,7 @@ class Reader(object):
             return {}
 
         entries = info_str.split(';')
-        retdict = {}
+        retdict = {'multiplyKey':[]}
         ALLELE_END = 0
         for entry in entries:
             entry = entry.split('=', 1)
@@ -413,10 +413,13 @@ class Reader(object):
                     val = val[0]
             except KeyError:
                 pass
+            if type(val) == list and len(val) == 1:
+                val = val[0]
             if ALLELE_END == 1:
-            	retdict[ID] = [retdict[ID], val]
+                retdict['multiplyKey'].append(ID)
+                retdict[ID] = [retdict[ID], val]
             elif ALLELE_END > 1:
-            	retdict[ID].append(val)
+                retdict[ID].append(val)
             else:
                 retdict[ID] = val
 
